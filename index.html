@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Project Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Serif+Bengali:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #030712 0%, #0B192C 50%, #1E3E62 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #00D2FF;
+            --light-blue: #93C5FD;
+            --text-light: #F8FAFC;
+            --text-dim: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', 'Noto Serif Bengali', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 40px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .hub-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(180deg, #FFFFFF 30%, var(--light-blue) 70%, var(--neon-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.08), transparent 60%);
+            pointer-events: none;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 210, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 210, 255, 0.1);
+        }
+
+        .project-status {
+            align-self: flex-start;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(0, 210, 255, 0.15);
+            color: var(--neon-blue);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+        }
+
+        .status-upcoming {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-dim);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .project-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .project-card p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: linear-gradient(135deg, #1E40AF 0%, #0284C7 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+
+        .launch-btn:hover {
+            background: linear-gradient(135deg, #1D4ED8 0%, #0EA5E9 100%);
+            box-shadow: 0 6px 16px rgba(0, 210, 255, 0.3);
+        }
+
+        .disabled-btn {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: rgba(255, 255, 255, 0.2) !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hub-container">
+    <header>
+        <h1>My Project Hub</h1>
+        <p>আমার তৈরি করা ওয়েব অ্যাপস এবং প্রজেক্ট কালেকশন 🚀</p>
+    </header>
+
+    <div class="grid-container">
+        
+        <!-- CARD 1: EXSTING MIRAS CALCULATOR -->
+        <div class="project-card">
+            <div>
+                <span class="project-status status-active">Live & Running</span>
+                <h2>Ad-Deen Calculator</h2>
+                <p>ইন্টারেক্টিভ ভিজ্যুয়াল মীরাস (উত্তরাধিকার) সিমুলেটর। নিখুঁত শরিয়াহ হিসাব এবং লাইভ ফ্যামিলি গ্রাফ ট্র্যাকার।</p>
+            </div>
+            <!-- আপনার বর্তমান ভার্সেল লিংক অলরেডি যুক্ত করে দেওয়া হয়েছে -->
+            <a href="https://ad-deen-calculator02.vercel.app/" target="_blank" class="launch-btn">
+                প্রজেক্টে প্রবেশ করুন ➔
+            </a>
+        </div>
+
+        <!-- CARD 2: FUTURE UPCOMING PROJECT 1 -->
+        <div class="project-card">
+            <div>
+                <span class="project-status status-upcoming">Coming Soon</span>
+                <h2>Digital Tasbeeh Counter</h2>
+                <p>হালকা ভাইব্রেশন এবং মেমোরি ব্যাকআপসহ জিকির ও তাসবিহ ট্র্যাকিং প্রিমিয়াম গ্লাস-মরফিক অ্যাপ।</p>
+            </div>
+            <a href="#" class="launch-btn disabled-btn">কাজ চলছে...</a>
+        </div>
+
+        <!-- CARD 3: FUTURE UPCOMING PROJECT 2 -->
+        <div class="project-card">
+            <div>
+                <span class="project-status status-upcoming">Coming Soon</span>
+                <h2>Deeni Habit Builder</h2>
+                <p>দৈনন্দিন ভালো অভ্যাস, সালাত ট্র্যাকিং এবং গ্যামিফাইড ইমান স্কোরিং ড্যাশবোর্ড অ্যাপ।</p>
+            </div>
+            <a href="#" class="launch-btn disabled-btn">কাজ চলছে...</a>
+        </div>
+
+        <!-- CARD 4: FUTURE UPCOMING PROJECT 3 -->
+        <div class="project-card">
+            <div>
+                <span class="project-status status-upcoming">Coming Soon</span>
+                <h2>Zakat Analytics Engine</h2>
+                <p>সাহেবে নিসাব ট্র্যাকার এবং লাইভ পাই-চার্ট এনিমেশন যুক্ত যাকাত গণনা সিস্টেম।</p>
+            </div>
+            <a href="#" class="launch-btn disabled-btn">কাজ চলছে...</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
