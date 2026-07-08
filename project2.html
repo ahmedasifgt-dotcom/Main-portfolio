@@ -5,69 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prayer Time Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; }
-        .text-stroke { -webkit-text-stroke: 1px rgba(0,0,0,0.5); }
+        body { font-family: sans-serif; }
         .bg-blur-custom::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url(https://share.google/LuLUPXp65iO3qbMNS);
+            background: url('https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=2070'); /* এখানে আপনার মসজিদের ছবি */
             background-size: cover;
-            filter: blur(8px) brightness(0.6);
+            filter: blur(8px) brightness(0.5);
             z-index: -1;
         }
+        .text-stroke { -webkit-text-stroke: 1px rgba(0,0,0,0.7); }
     </style>
 </head>
 <body class="bg-blur-custom min-h-screen text-white flex flex-col items-center py-10">
 
     <header class="text-center mb-6">
-        <h1 id="greeting" class="text-2xl font-light text-white/90">শুভ দুপুর</h1>
-        <h2 class="text-4xl font-bold tracking-wide">নামাজের সময়সূচী</h2>
-        <p id="current-date" class="text-lg font-semibold mt-2 text-white/80"></p>
+        <h2 class="text-3xl font-bold">নামাজের সময়সূচী</h2>
+        <select id="city-select" class="mt-4 bg-white/20 border border-white/30 rounded-lg px-4 py-2 text-white">
+            <option value="Dhaka">ঢাকা</option>
+            <option value="Chittagong">চট্টগ্রাম</option>
+        </select>
     </header>
 
-    <!-- Location Selector (ফিরে এসেছে) -->
-    <div class="mb-8 w-full max-w-xs">
-        <select id="city-select" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-sky-300 backdrop-blur-md cursor-pointer">
-            <option value="Dhaka" class="text-blue-950">ঢাকা (Dhaka)</option>
-            <option value="Chittagong" class="text-blue-950">চট্টগ্রাম (Chittagong)</option>
-            <option value="Sylhet" class="text-blue-950">সিলেট (Sylhet)</option>
-            <option value="Rajshahi" class="text-blue-950">রাজশাহী (Rajshahi)</option>
-            <option value="Khulna" class="text-blue-950">খুলনা (Khulna)</option>
-        </select>
+    <div id="prayer-cards" class="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 w-full max-w-lg">
+        <p class="text-center">লোড হচ্ছে...</p>
     </div>
 
-    <div id="prayer-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 w-full max-w-5xl">
-        <!-- কার্ডগুলো জাভাস্ক্রিপ্ট দিয়ে তৈরি হবে -->
-    </div>
-
-    <!-- পপ-আপ মোডাল -->
-    <div id="modal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl text-center w-full max-w-sm">
-            <h3 class="text-2xl font-bold mb-2">মসজিদে জামাত</h3>
-            <p id="jamat-time" class="text-4xl font-extrabold mb-6"></p>
-            <button onclick="closeModal()" class="bg-white/20 px-6 py-2 rounded-full hover:bg-white/30">Back</button>
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl text-center w-full max-w-xs">
+            <h3 class="text-xl font-bold">মসজিদে জামাত</h3>
+            <p id="jamat-time" class="text-3xl font-bold my-4"></p>
+            <button onclick="document.getElementById('modal').classList.add('hidden')" class="bg-white/20 px-6 py-2 rounded-full">Back</button>
         </div>
     </div>
 
     <script>
-        const prayerData = [
-            { name: 'ফজর', jamat: '৪:৪৫' },
-            { name: 'যোহর', jamat: '১:১৫' },
-            { name: 'আসর', jamat: '৫:১৫' },
-            { name: 'মাগরিব', jamat: '৭:০৫' },
-            { name: 'এশা', jamat: '৮:৪৫' }
+        const prayers = [
+            { name: 'ফজর', api: 'Fajr', jamat: '৪:৪৫', img: 'https://images.unsplash.com/photo-1544605151-51829989f816' },
+            { name: 'যোহর', api: 'Dhuhr', jamat: '১:১৫', img: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb' },
+            { name: 'আসর', api: 'Asr', jamat: '৫:১৫', img: 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8' },
+            { name: 'মাগরিব', api: 'Maghrib', jamat: '৭:০৫', img: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e' },
+            { name: 'এশা', api: 'Isha', jamat: '৮:৪৫', img: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67' }
         ];
 
-        // বাকি জাভাস্ক্রিপ্ট লজিক আগের মতই থাকবে...
-        // শুধু city-select পরিবর্তন করলে fetchPrayerTimes ফাংশনটি কল করবেন।
-        
-        document.getElementById('city-select').addEventListener('change', (e) => {
-            console.log("শহর পরিবর্তিত হয়েছে:", e.target.value);
-            // এখানে আপনি API কল করে সময় আপডেট করার লজিক বসাবেন
-        });
+        async function fetchTimes(city) {
+            const container = document.getElementById('prayer-cards');
+            container.innerHTML = '<p>লোড হচ্ছে...</p>';
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Bangladesh&method=2`);
+                const d = await res.json();
+                container.innerHTML = '';
+                prayers.forEach(p => {
+                    container.innerHTML += `
+                        <div style="background: url('${p.img}') center/cover" class="rounded-2xl p-6 border border-white/20 shadow-lg">
+                            <h3 class="text-xl font-bold text-stroke">${p.name}</h3>
+                            <p class="text-2xl font-bold">${d.data.timings[p.api]}</p>
+                            <button onclick="document.getElementById('modal').classList.remove('hidden'); document.getElementById('jamat-time').innerText='${p.jamat}'" class="text-xs underline mt-2">Show More</button>
+                        </div>
+                    `;
+                });
+            } catch(e) { container.innerHTML = '<p>নেটওয়ার্ক সমস্যা!</p>'; }
+        }
+
+        document.getElementById('city-select').onchange = (e) => fetchTimes(e.target.value);
+        fetchTimes('Dhaka');
     </script>
 </body>
 </html>
