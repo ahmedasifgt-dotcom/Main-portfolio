@@ -6,61 +6,77 @@
     <title>Prayer Time Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .glass-bg { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; }
+        .bg-blur-custom::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('1000056056.jpg'); /* ব্যাকগ্রাউন্ড ইমেজ */
+            background-size: cover;
+            filter: blur(10px) brightness(0.4);
+            z-index: -1;
+        }
+        .text-stroke { -webkit-text-stroke: 1px rgba(0,0,0,0.8); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
     </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen p-5">
+<body class="bg-blur-custom min-h-screen text-white p-5 flex flex-col items-center">
 
-    <header class="text-center mb-8">
+    <header class="text-center mb-6">
         <h2 class="text-3xl font-bold">নামাজের সময়সূচী</h2>
-        <select id="city-select" class="mt-4 bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white w-full max-w-xs">
+        <select id="city-select" class="mt-4 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white w-full max-w-xs backdrop-blur-md">
             <option value="Dhaka">ঢাকা</option>
             <option value="Chittagong">চট্টগ্রাম</option>
             <option value="Sylhet">সিলেট</option>
         </select>
     </header>
 
-    <div id="prayer-cards" class="grid grid-cols-1 gap-4 max-w-lg mx-auto">
-        <p class="text-center">লোড হচ্ছে...</p>
-    </div>
+    <div id="prayer-cards" class="grid grid-cols-1 gap-4 w-full max-w-lg">
+        </div>
 
-    <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-bg border border-white/20 p-8 rounded-3xl text-center w-full max-w-xs">
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white/10 border border-white/20 p-8 rounded-3xl text-center w-full max-w-xs shadow-2xl">
             <h3 class="text-xl font-bold">মসজিদে জামাত</h3>
-            <p id="jamat-time" class="text-3xl font-bold my-4"></p>
-            <button onclick="document.getElementById('modal').classList.add('hidden')" class="bg-white/20 px-6 py-2 rounded-full">Back</button>
+            <p id="jamat-time" class="text-4xl font-bold my-4 text-sky-300"></p>
+            <button onclick="document.getElementById('modal').classList.add('hidden')" class="bg-white/20 hover:bg-white/30 px-6 py-2 rounded-full transition">Back</button>
         </div>
     </div>
 
     <script>
         const prayers = [
-            { name: 'ফজর', api: 'Fajr', jamat: '৪:৪৫' },
-            { name: 'যোহর', api: 'Dhuhr', jamat: '১:১৫' },
-            { name: 'আসর', api: 'Asr', jamat: '৫:১৫' },
-            { name: 'মাগরিব', api: 'Maghrib', jamat: '৭:০৫' },
-            { name: 'এশা', api: 'Isha', jamat: '৮:৪৫' }
+            { name: 'ফজর', api: 'Fajr', jamat: '৪:৪৫', img: '1000056058.jpg' },
+            { name: 'যোহর', api: 'Dhuhr', jamat: '১:১৫', img: '1000056055.jpg' },
+            { name: 'আসর', api: 'Asr', jamat: '৫:১৫', img: '1000056060.jpg' },
+            { name: 'মাগরিব', api: 'Maghrib', jamat: '৭:০৫', img: '1000056059.jpg' },
+            { name: 'এশা', api: 'Isha', jamat: '৮:৪৫', img: '1000056061.jpg' }
         ];
 
         async function fetchTimes(city) {
             const container = document.getElementById('prayer-cards');
-            container.innerHTML = '<p class="text-center">লোড হচ্ছে...</p>';
             try {
                 const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Bangladesh&method=2`);
                 const d = await res.json();
                 container.innerHTML = '';
                 prayers.forEach(p => {
                     container.innerHTML += `
-                        <div class="glass-bg p-6 rounded-2xl border border-white/10 flex justify-between items-center">
-                            <div>
-                                <h3 class="text-xl font-bold">${p.name}</h3>
-                                <p class="text-2xl font-bold text-sky-400">${d.data.timings[p.api]}</p>
+                        <div style="background: url('${p.img}') center/cover" class="relative rounded-2xl p-6 border border-white/20 shadow-lg overflow-hidden">
+                            <div class="absolute inset-0 bg-black/40"></div>
+                            <div class="relative z-10 flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-xl font-bold text-stroke">${p.name}</h3>
+                                    <p class="text-2xl font-bold">${d.data.timings[p.api]}</p>
+                                </div>
+                                <button onclick="openModal('${p.jamat}')" class="text-xs bg-white/20 px-3 py-1 rounded-lg backdrop-blur-sm">Show More</button>
                             </div>
-                            <button onclick="document.getElementById('modal').classList.remove('hidden'); document.getElementById('jamat-time').innerText='${p.jamat}'" class="text-sm bg-white/10 px-4 py-2 rounded-lg">Show More</button>
                         </div>
                     `;
                 });
-            } catch(e) { container.innerHTML = '<p class="text-center text-red-400">নেটওয়ার্ক সমস্যা!</p>'; }
+            } catch(e) { container.innerHTML = '<p class="text-center">নেটওয়ার্ক সমস্যা!</p>'; }
+        }
+
+        function openModal(time) {
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('jamat-time').innerText = time;
         }
 
         document.getElementById('city-select').onchange = (e) => fetchTimes(e.target.value);
@@ -68,5 +84,6 @@
     </script>
 </body>
 </html>
+
 
 
